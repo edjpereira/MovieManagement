@@ -1,60 +1,77 @@
 ﻿using MovieManagement.Domain.Entities;
 using MovieManagement.Domain.Interfaces;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MovieManagement.Business.Services
 {
-
     public class MovieServices
     {
         private readonly IFilmeRepository _filmeRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
+        private readonly IRealizadorRepository _realizadorRepository;
 
-        public MovieServices(IFilmeRepository filmeRepository)
+        public MovieServices(
+            IFilmeRepository filmeRepository,
+            ICategoriaRepository categoriaRepository,
+            IRealizadorRepository realizadorRepository)
         {
             _filmeRepository = filmeRepository;
+            _categoriaRepository = categoriaRepository;
+            _realizadorRepository = realizadorRepository;
         }
 
-        public void AdicionarFilme(Filme novoFilme)
+        public void AdicionarFilme(Filme filme)
         {
-            if (string.IsNullOrWhiteSpace(novoFilme.Titulo))
-            {
-                throw new Exception("O título do filme é obrigatório.");
-            }
+            if (string.IsNullOrWhiteSpace(filme.Titulo))
+                throw new System.Exception("O título do filme é obrigatório.");
 
-            var filmeExistente = _filmeRepository.ObterFilmePorTitulo(novoFilme.Titulo);
-            if (filmeExistente != null)
-            {
-                throw new Exception("Já existe um filme com esse título.");
-            }
-
-            int nota = (int)novoFilme.Classificacao;
-            if (nota < 0 || nota > 5)
-            {
-                throw new Exception("A classificação deve estar entre 0 (Péssimo) e 5 (Excelente).");
-            }
-            _filmeRepository.AdicionarFilme(novoFilme);
+            _filmeRepository.AdicionarFilme(filme);
         }
 
         public List<Filme> ListarFilmes()
         {
-            return _filmeRepository.ListarFilmes();
+            var filmes = _filmeRepository.ListarFilmes();
+
+            foreach (var f in filmes)
+            {
+                if (f.Categoria == null)
+                    f.Categoria = _categoriaRepository.ObterCategoriaPorId(f.CategoriaId)!;
+
+                if (f.Realizador == null)
+                    f.Realizador = _realizadorRepository.ObterRealizadorPorId(f.RealizadorId)!;
+            }
+
+            return filmes;
         }
 
         public Filme? ObterFilmePorTitulo(string titulo)
         {
-            if (string.IsNullOrWhiteSpace(titulo))
+            var filme = _filmeRepository.ObterFilmePorTitulo(titulo);
+
+            if (filme != null)
             {
-                throw new Exception("O termo de pesquisa não pode estar vazio.");
+                if (filme.Categoria == null)
+                    filme.Categoria = _categoriaRepository.ObterCategoriaPorId(filme.CategoriaId)!;
+
+                if (filme.Realizador == null)
+                    filme.Realizador = _realizadorRepository.ObterRealizadorPorId(filme.RealizadorId)!;
             }
-            return _filmeRepository.ObterFilmePorTitulo(titulo);
+
+            return filme;
         }
 
         public bool RemoverFilme(int id)
         {
-            bool foiRemovido = _filmeRepository.RemoverFilme(id);
+            return _filmeRepository.RemoverFilme(id);
+        }
 
-            return foiRemovido;
+        public void AtualizarFilme(Filme filme)
+        {
+            if (string.IsNullOrWhiteSpace(filme.Titulo))
+                throw new System.Exception("O título do filme não pode ficar vazio.");
+
+            _filmeRepository.AtualizarFilme(filme);
         }
     }
 }

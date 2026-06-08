@@ -41,5 +41,13 @@ namespace MovieManagement.Data.Repositories
             }
             return false;
         }
+        public void AtualizarCategoria(Categoria categoria)
+        {
+            var index = _categorias.FindIndex(c => c.Id == categoria.Id);
+            if (index != -1)
+            {
+                _categorias[index] = categoria;
+            }
+        }
     }
 }

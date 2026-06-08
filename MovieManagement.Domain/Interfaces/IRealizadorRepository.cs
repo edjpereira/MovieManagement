@@ -10,5 +10,6 @@ namespace MovieManagement.Domain.Interfaces
         Realizador? ObterRealizadorPorNome(string nome);
         Realizador? ObterRealizadorPorId(int id);
         bool RemoverRealizador(int id);
+        void AtualizarRealizador(Realizador realizador);
     }
 }

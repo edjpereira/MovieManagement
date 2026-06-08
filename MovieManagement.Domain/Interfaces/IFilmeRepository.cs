@@ -9,5 +9,6 @@ namespace MovieManagement.Domain.Interfaces
         List<Filme> ListarFilmes();
         Filme? ObterFilmePorTitulo(string titulo);
         bool RemoverFilme(int id);
+        void AtualizarFilme(Filme filme);
     }
 }

@@ -22,7 +22,8 @@ namespace MovieManagementUi
                 Console.WriteLine("=== SUB-MENU CATEGORIAS ===");
                 Console.WriteLine("1. Adicionar categoria");
                 Console.WriteLine("2. Listar categorias");
-                Console.WriteLine("3. Remover categoria");
+                Console.WriteLine("3. Editar Categoria");
+                Console.WriteLine("4. Remover categoria");
                 Console.WriteLine("0. Voltar ao Menu Principal");
                 Console.Write("\nEscolha uma opção: ");
 
@@ -32,11 +33,23 @@ namespace MovieManagementUi
 
                 switch (opcao)
                 {
-                    case 1: MenuAdicionarCategoria(); break;
-                    case 2: MenuListarCategorias(); break;
-                    case 3: MenuRemoverCategoria(); break;
-                    case 0: return;
-                    default: Console.WriteLine("Opção inválida!"); break;
+                    case 1:
+                        MenuAdicionarCategoria();
+                        break;
+                    case 2:
+                        MenuListarCategorias();
+                        break;
+                    case 3:
+                        MenuEditarCategoria();
+                        break;
+                    case 4:
+                        MenuRemoverCategoria();
+                        break;
+                    case 0:
+                        return;
+                    default:
+                        Console.WriteLine("Opção inválida!");
+                        break;
                 }
 
                 if (opcao != 0)
@@ -82,9 +95,89 @@ namespace MovieManagementUi
             }
         }
 
+        private void MenuEditarCategoria()
+        {
+            Console.Clear();
+            Console.WriteLine("=================================================");
+            Console.WriteLine("              EDITAR CATEGORIA                   ");
+            Console.WriteLine("=================================================");
+
+            var listaCategorias = _categoriaServices.ListarCategorias();
+
+            if (listaCategorias.Count == 0)
+            {
+                Console.WriteLine("\n⚠️ Não existem categorias registadas.");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\nCategorias no Sistema:");
+            Console.WriteLine("-------------------------------------------------");
+            foreach (var c in listaCategorias)
+            {
+                Console.WriteLine($"[ID: {c.Id}] - {c.Nome}");
+            }
+            Console.WriteLine("-------------------------------------------------\n");
+
+            Console.Write("Indique o ID da categoria que deseja editar: ");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("❌ ID inválido.");
+                Console.ReadKey();
+                return;
+            }
+
+            var categoria = listaCategorias.FirstOrDefault(c => c.Id == id);
+            if (categoria == null)
+            {
+                Console.WriteLine("❌ Categoria não encontrada!");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine($"\n✍️ A editar: {categoria.Nome}");
+            Console.WriteLine("(Pressione ENTER sem escrever nada para MANTER o valor atual)\n");
+
+            Console.Write($"Novo Nome [{categoria.Nome}]: ");
+            string novoNome = Console.ReadLine() ?? "";
+            if (!string.IsNullOrWhiteSpace(novoNome))
+            {
+                categoria.Nome = novoNome;
+            }
+
+            try
+            {
+                _categoriaServices.AtualizarCategoria(categoria);
+                Console.WriteLine("\n✅ Categoria atualizada com sucesso!");
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine($"\n❌ Erro ao atualizar: {ex.Message}");
+            }
+
+            Console.WriteLine("\nPressione qualquer tecla para voltar...");
+            Console.ReadKey();
+        }
+
         private void MenuRemoverCategoria()
         {
             Console.WriteLine("--- REMOVER CATEGORIA ---");
+            var listaCategorias = _categoriaServices.ListarCategorias();
+
+            if (listaCategorias.Count == 0)
+            {
+                Console.WriteLine("\n⚠️ Não existem categorias registadas.");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\nCategorias no Sistema:");
+            Console.WriteLine("-------------------------------------------------");
+            foreach (var c in listaCategorias)
+            {
+                Console.WriteLine($"[ID: {c.Id}] - {c.Nome}");
+            }
+            Console.WriteLine("-------------------------------------------------\n");
             Console.Write("Introduza o ID da categoria a remover: ");
 
             if (int.TryParse(Console.ReadLine(), out int id))

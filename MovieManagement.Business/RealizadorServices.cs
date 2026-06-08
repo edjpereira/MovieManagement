@@ -43,5 +43,12 @@ namespace MovieManagement.Business.Services
         {
             return _realizadorRepository.RemoverRealizador(id);
         }
+        public void AtualizarRealizador(Realizador realizador)
+        {
+            if (string.IsNullOrWhiteSpace(realizador.Nome))
+                throw new System.Exception("O nome do realizador não pode ficar vazio.");
+
+            _realizadorRepository.AtualizarRealizador(realizador);
+        }
     }
 }

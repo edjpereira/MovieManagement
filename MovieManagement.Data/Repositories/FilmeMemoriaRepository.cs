@@ -36,5 +36,13 @@ namespace MovieManagement.Data.Repositories
             }
             return false;
         }
+        public void AtualizarFilme(Filme filme)
+        {
+            var index = _filmes.FindIndex(f => f.Id == filme.Id);
+            if (index != -1)
+            {
+                _filmes[index] = filme;
+            }
+        }
     }
 }

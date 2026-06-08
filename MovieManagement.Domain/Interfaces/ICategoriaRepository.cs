@@ -10,5 +10,6 @@ namespace MovieManagement.Domain.Interfaces
         Categoria? ObterCategoriaPorNome(string nome);
         Categoria? ObterCategoriaPorId(int id);
         bool RemoverCategoria(int id);
+        void AtualizarCategoria(Categoria categoria);
     }
 }

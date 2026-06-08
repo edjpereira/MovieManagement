@@ -41,5 +41,13 @@ namespace MovieManagement.Data.Repositories
             }
             return false;
         }
+        public void AtualizarRealizador(Realizador realizador)
+        {
+            var index = _realizadores.FindIndex(r => r.Id == realizador.Id);
+            if (index != -1)
+            {
+                _realizadores[index] = realizador;
+            }
+        }
     }
 }

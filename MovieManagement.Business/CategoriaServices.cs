@@ -43,5 +43,12 @@ namespace MovieManagement.Business.Services
         {
             return _categoriaRepository.RemoverCategoria(id);
         }
+        public void AtualizarCategoria(Categoria categoria)
+        {
+            if (string.IsNullOrWhiteSpace(categoria.Nome))
+                throw new System.Exception("O nome da categoria não pode ficar vazio.");
+
+            _categoriaRepository.AtualizarCategoria(categoria);
+        }
     }
 }
