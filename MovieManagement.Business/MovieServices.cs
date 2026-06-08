@@ -19,7 +19,7 @@ namespace MovieManagement.Business.Services
         {
             if (string.IsNullOrWhiteSpace(novoFilme.Titulo))
             {
-                throw new Exception ("O título do filme é obrigatório.");
+                throw new Exception("O título do filme é obrigatório.");
             }
 
             var filmeExistente = _filmeRepository.ObterFilmePorTitulo(novoFilme.Titulo);
@@ -50,13 +50,11 @@ namespace MovieManagement.Business.Services
             return _filmeRepository.ObterFilmePorTitulo(titulo);
         }
 
-        public void RemoverFilme(int id)
+        public bool RemoverFilme(int id)
         {
             bool foiRemovido = _filmeRepository.RemoverFilme(id);
-            if (!foiRemovido)
-            {
-                throw new Exception("Não foi possível remover: filme não encontrado.");
-            }
+
+            return foiRemovido;
         }
     }
 }
